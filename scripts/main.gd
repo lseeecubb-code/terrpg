@@ -3,6 +3,8 @@ extends Node2D
 const WORLD_SCENE := preload("res://scripts/world.gd")
 const PLAYER_SCENE := preload("res://scripts/player.gd")
 
+@export_range(0.25, 4.0, 0.05) var game_zoom := 1.0
+
 var world: Node2D
 var player: CharacterBody2D
 
@@ -25,8 +27,6 @@ func _start_selected_world(world_seed: int, character_name: String, world_name: 
 
     player = PLAYER_SCENE.new()
     player.name = "Player"
-    # The hitbox is slightly inset from the 2x3-tile visual footprint.
-    # This gives the player a little corner clearance instead of snagging on edges.
     player.position = Vector2(220.0, world.heights[7] * world.TILE_SIZE - 40.0)
     add_child(player)
 
@@ -39,6 +39,7 @@ func _start_selected_world(world_seed: int, character_name: String, world_name: 
 
     var camera := Camera2D.new()
     camera.name = "Camera"
+    camera.zoom = Vector2(game_zoom, game_zoom)
     camera.position_smoothing_enabled = true
     camera.position_smoothing_speed = 7.0
     camera.limit_left = 0
