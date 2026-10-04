@@ -25,13 +25,15 @@ func _start_selected_world(world_seed: int, character_name: String, world_name: 
 
     player = PLAYER_SCENE.new()
     player.name = "Player"
-    # Place the bottom of the roughly 2x3-tile character on the surface.
-    player.position = Vector2(220.0, world.heights[7] * world.TILE_SIZE - 48.0)
+    # The hitbox is slightly inset from the 2x3-tile visual footprint.
+    # This gives the player a little corner clearance instead of snagging on edges.
+    player.position = Vector2(220.0, world.heights[7] * world.TILE_SIZE - 40.0)
     add_child(player)
 
     var collider := CollisionShape2D.new()
+    collider.name = "PlayerHitbox"
     var rectangle := RectangleShape2D.new()
-    rectangle.size = Vector2(56.0, 88.0)
+    rectangle.size = Vector2(48.0, 80.0)
     collider.shape = rectangle
     player.add_child(collider)
 
