@@ -4,7 +4,9 @@ extends CharacterBody2D
 @export var acceleration := 1400.0
 @export var friction := 1800.0
 @export var jump_velocity := -520.0
+
 const GRAVITY := 1350.0
+const TILE_SIZE := 32.0
 
 func _physics_process(delta: float) -> void:
     var direction := Input.get_axis("move_left", "move_right")
@@ -19,13 +21,13 @@ func _physics_process(delta: float) -> void:
         velocity.y = jump_velocity
 
     move_and_slide()
-    global_position.x = clampf(global_position.x, 24.0, 220.0 * 32.0 - 24.0)
+    global_position.x = clampf(global_position.x, TILE_SIZE, 220.0 * TILE_SIZE - TILE_SIZE)
 
 func _draw() -> void:
-    # Temporary original player art; this will become a proper sprite later.
-    draw_rect(Rect2(-12, -18, 24, 30), Color("#d47b42"))
-    draw_rect(Rect2(-10, -30, 20, 14), Color("#e6b07a"))
-    draw_rect(Rect2(-7, -27, 4, 4), Color("#222222"))
-    draw_rect(Rect2(3, -27, 4, 4), Color("#222222"))
-    draw_rect(Rect2(-12, 10, 9, 10), Color("#3d506b"))
-    draw_rect(Rect2(3, 10, 9, 10), Color("#3d506b"))
+    # Temporary original player art scaled to roughly 2 tiles wide by 3 tiles tall.
+    draw_rect(Rect2(-28, -44, 56, 56), Color("#d47b42"))
+    draw_rect(Rect2(-24, -68, 48, 28), Color("#e6b07a"))
+    draw_rect(Rect2(-17, -58, 7, 7), Color("#222222"))
+    draw_rect(Rect2(10, -58, 7, 7), Color("#222222"))
+    draw_rect(Rect2(-27, 12, 23, 28), Color("#3d506b"))
+    draw_rect(Rect2(4, 12, 23, 28), Color("#3d506b"))
