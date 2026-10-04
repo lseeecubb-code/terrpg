@@ -90,7 +90,6 @@ func _add_trees() -> void:
 
 func _draw() -> void:
     draw_rect(Rect2(0, 0, WORLD_WIDTH * TILE_SIZE, WORLD_HEIGHT * TILE_SIZE), Color("#8cc9f0"))
-    var visible_height := WORLD_HEIGHT * TILE_SIZE
     draw_rect(Rect2(0, 0, WORLD_WIDTH * TILE_SIZE, 170), Color("#8cc9f0"))
 
     for x in WORLD_WIDTH:
@@ -111,17 +110,31 @@ func _draw() -> void:
                 draw_line(rect.position + Vector2(3, 4), rect.position + Vector2(12, 4), Color(1, 1, 1, 0.08), 1.0)
 
 func build_surface_collision(parent: Node2D) -> void:
-    # One collision polygon made from the top surface, so the player can run/jump now.
-    var polygon := PackedVector2Array()
-    polygon.append(Vector2(0, heights[0] * TILE_SIZE))
-    for x in WORLD_WIDTH:
-        polygon.append(Vector2(x * TILE_SIZE, heights[x] * TILE_SIZE))
-    polygon.append(Vector2(WORLD_WIDTH * TILE_SIZE, WORLD_HEIGHT * TILE_SIZE))
-    polygon.append(Vector2(0, WORLD_HEIGHT * TILE_SIZE))
-
+    # Build collision from the actual solid tiles instead of a diagonal surface polygon.
+    # Adjacent solid tiles on each row are merged into rectangular colliders for efficiency.
     var body := StaticBody2D.new()
     body.name = "TerrainCollision"
-    var shape := CollisionPolygon2D.new()
-    shape.polygon = polygon
-    body.add_child(shape)
+
+    for y in WORLD_HEIGHT:
+        var run_start := -1
+        for x in range(WORLD_WIDTH + 1):
+            var solid := false
+            if x < WORLD_WIDTH:
+                solid = blocks[x][y] != 0
+
+            if solid and run_start == -1:
+                run_start = x
+            elif not solid and run_start != -1:
+                var run_width := x - run_start
+                var collider := CollisionShape2D.new()
+                var rectangle := RectangleShape2D.new()
+                rectangle.size = Vector2(run_width * TILE_SIZE, TILE_SIZE)
+                collider.shape = rectangle
+                collider.position = Vector2(
+                    (run_start + run_width * 0.5) * TILE_SIZE,
+                    (y + 0.5) * TILE_SIZE
+                )
+                body.add_child(collider)
+                run_start = -1
+
     parent.add_child(body)
