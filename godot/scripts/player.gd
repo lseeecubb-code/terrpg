@@ -4,7 +4,6 @@ extends CharacterBody2D
 @export var acceleration := 1400.0
 @export var friction := 1800.0
 @export var jump_velocity := -520.0
-a
 const GRAVITY := 1350.0
 
 func _physics_process(delta: float) -> void:
@@ -20,7 +19,6 @@ func _physics_process(delta: float) -> void:
         velocity.y = jump_velocity
 
     move_and_slide()
-
     global_position.x = clampf(global_position.x, 24.0, 220.0 * 32.0 - 24.0)
 
 func _draw() -> void:
