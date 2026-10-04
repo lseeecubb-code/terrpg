@@ -25,15 +25,14 @@ func _start_selected_world(world_seed: int, character_name: String, world_name: 
 
     player = PLAYER_SCENE.new()
     player.name = "Player"
-    player.position = Vector2(220.0, world.heights[7] * world.TILE_SIZE - 80.0)
+    # Place the bottom of the roughly 2x3-tile character on the surface.
+    player.position = Vector2(220.0, world.heights[7] * world.TILE_SIZE - 48.0)
     add_child(player)
 
     var collider := CollisionShape2D.new()
-    var capsule := CapsuleShape2D.new()
-    capsule.radius = 11.0
-    capsule.height = 48.0
-    collider.shape = capsule
-    collider.position = Vector2(0, -4)
+    var rectangle := RectangleShape2D.new()
+    rectangle.size = Vector2(56.0, 88.0)
+    collider.shape = rectangle
     player.add_child(collider)
 
     var camera := Camera2D.new()
