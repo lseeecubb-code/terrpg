@@ -24,7 +24,7 @@ func _physics_process(delta: float) -> void:
     global_position.x = clampf(global_position.x, TILE_SIZE, 220.0 * TILE_SIZE - TILE_SIZE)
 
 func _draw() -> void:
-    # Temporary original player art scaled to roughly 2 tiles wide by 3 tiles tall.
+    # Original player art: about 2 tiles wide by 3 tiles tall.
     draw_rect(Rect2(-28, -44, 56, 56), Color("#d47b42"))
     draw_rect(Rect2(-24, -68, 48, 28), Color("#e6b07a"))
     draw_rect(Rect2(-17, -58, 7, 7), Color("#222222"))
