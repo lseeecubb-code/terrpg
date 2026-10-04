@@ -5,12 +5,23 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>TERRPG</title>
   <style>
-    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#070b12;color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif}#game{display:block;width:100%;height:100%;touch-action:none;outline:0}#ui{position:fixed;inset:0;pointer-events:none}#ui .panel{pointer-events:auto;position:absolute;left:16px;top:16px;min-width:260px;padding:14px;border:1px solid #34435b;border-radius:10px;background:rgba(8,12,20,.86);box-shadow:0 10px 30px rgba(0,0,0,.35)}#ui button{pointer-events:auto;border:1px solid #536783;border-radius:7px;background:#182338;color:#fff;padding:8px 12px;cursor:pointer}#ui button:hover{background:#24334d}.hud{position:absolute;left:16px;bottom:16px;padding:10px 12px;border-radius:9px;background:rgba(8,12,20,.78);border:1px solid #34435b}.skills{display:flex;gap:6px;margin-top:7px}.skill{padding:5px 8px;border:1px solid #536783;border-radius:6px;background:#121b2b}.muted{opacity:.7;font-size:12px}
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07111f;color:#fff;font-family:Arial,sans-serif}
+    #game{display:block;width:100vw;height:100vh;touch-action:none;outline:none}
+    #ui{position:fixed;inset:0;pointer-events:none}
+    .hud{position:absolute;left:18px;top:18px;padding:12px 16px;background:rgba(7,13,24,.78);border:1px solid rgba(255,255,255,.15);border-radius:10px;line-height:1.5;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+    .skills{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;gap:10px}
+    .skill{min-width:72px;padding:8px;text-align:center;background:rgba(7,13,24,.85);border:1px solid rgba(255,255,255,.2);border-radius:9px;font-weight:bold}
+    .skill small{font-weight:normal;opacity:.8}
+    #error{position:fixed;inset:0;display:none;place-items:center;padding:24px;background:#07111f;color:#fff;text-align:center;z-index:50}
+    #error .box{max-width:720px;padding:24px;background:#101d30;border:1px solid #3b506d;border-radius:14px}
+    #error pre{white-space:pre-wrap;text-align:left;color:#ffb4b4;font-size:12px}
   </style>
 </head>
 <body>
   <canvas id="game"></canvas>
   <div id="ui"></div>
+  <div id="error"><div class="box"><h2>TERRPG could not start</h2><p id="errorText">Unknown error.</p><pre id="errorDetails"></pre></div></div>
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
   <script src="js/data.js"></script>
   <script src="js/main.js"></script>
