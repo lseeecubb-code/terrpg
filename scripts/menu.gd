@@ -76,10 +76,11 @@ func _build_menu() -> void:
     version.add_theme_color_override("font_color", Color("#8d9aaa"))
     add_child(version)
 
-func _clear_buttons() -> void:
-    for button in buttons:
-        button.queue_free()
+func _clear_screen() -> void:
     buttons.clear()
+    for child in panel.get_children():
+        if child != content_title:
+            child.queue_free()
 
 func _add_button(text: String, y: float, callback: Callable) -> void:
     var button := Button.new()
@@ -115,7 +116,7 @@ func _show_main() -> void:
     screen = "main"
     subtitle.text = "A NEW SANDBOX ADVENTURE"
     content_title.text = "MAIN MENU"
-    _clear_buttons()
+    _clear_screen()
     _add_button("Single Player", 55, _on_single_player_pressed)
     _add_button("Worlds", 110, _on_worlds_pressed)
     _add_button("Settings", 165, _on_settings_pressed)
@@ -126,7 +127,7 @@ func _show_worlds() -> void:
     screen = "worlds"
     subtitle.text = "CHOOSE AN ADVENTURE"
     content_title.text = "WORLD SELECT"
-    _clear_buttons()
+    _clear_screen()
     _add_button("Seeded World", 55, _on_play_pressed)
     _add_button("New World", 110, _on_new_world_pressed)
     _add_button("Back", 165, _show_main)
@@ -135,7 +136,7 @@ func _show_settings() -> void:
     screen = "settings"
     subtitle.text = "CUSTOMIZE YOUR GAME"
     content_title.text = "SETTINGS"
-    _clear_buttons()
+    _clear_screen()
     _add_button("Toggle Fullscreen", 55, _on_fullscreen_pressed)
     _add_button("Back", 110, _show_main)
 
@@ -143,7 +144,7 @@ func _show_credits() -> void:
     screen = "credits"
     subtitle.text = "TERRPG — ORIGINAL GAME, ASSETS AND SYSTEMS"
     content_title.text = "CREDITS"
-    _clear_buttons()
+    _clear_screen()
     _add_button("Back", 55, _show_main)
 
     var info := Label.new()
@@ -154,7 +155,6 @@ func _show_credits() -> void:
     info.add_theme_font_size_override("font_size", 17)
     info.add_theme_color_override("font_color", Color("#c8d4df"))
     panel.add_child(info)
-    info.tree_exiting.connect(func() -> void: pass)
 
 func _on_single_player_pressed() -> void:
     _show_worlds()
@@ -177,6 +177,9 @@ func _on_fullscreen_pressed() -> void:
     else:
         DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
         subtitle.text = "FULLSCREEN MODE"
+
+func _on_settings_pressed() -> void:
+    _show_settings()
 
 func _on_credits_pressed() -> void:
     _show_credits()
