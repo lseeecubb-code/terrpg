@@ -1,3 +1,5 @@
+document.body.insertAdjacentHTML('beforeend','<div style="position:fixed;top:8px;right:8px;z-index:99;color:#0f0">main.js running</div>');
+
 (() => {
   'use strict';
 
