@@ -108,7 +108,10 @@ func _show_main() -> void:
     _button("Play", 65, _show_characters)
     _button("Settings", 120, _show_settings)
     _button("Credits", 175, _show_credits)
-    _button("Quit", 230, func(): get_tree().quit())
+    _button("Quit", 230, Callable(self, "_quit_game"))
+
+func _quit_game() -> void:
+    get_tree().quit()
 
 func _show_characters() -> void:
     content_title.text = "SELECT CHARACTER"
@@ -121,9 +124,9 @@ func _show_characters() -> void:
         return
     var y := 55.0
     for c in characters:
-        var n := str(c.get("name", "Unnamed"))
-        var m := str(c.get("mode", "Classic"))
-        _button(n + "  •  " + m, y, func(): _select_character(n))
+        var character_name: String = str(c.get("name", "Unnamed"))
+        var character_mode: String = str(c.get("mode", "Classic"))
+        _button(character_name + "  •  " + character_mode, y, _select_character.bind(character_name))
         y += 52.0
     _button("New Character", y + 5, _show_character_create)
     _button("Back", y + 58, _show_main)
@@ -142,20 +145,21 @@ func _show_character_create() -> void:
     subtitle.text = "YOUR CHARACTER CAN TRAVEL BETWEEN WORLDS"
     _clear()
     _edit("Character name", 55)
-    _button("Classic", 110, func(): _create_character("Classic"))
-    _button("Journey", 165, func(): _create_character("Journey"))
+    _button("Classic", 110, _create_character.bind("Classic"))
+    _button("Journey", 165, _create_character.bind("Journey"))
     _button("Back", 220, _show_characters)
     _info("Choose a name and character mode. More appearance options can be added later.", 275)
 
 func _create_character(mode: String) -> void:
     for child in panel.get_children():
         if child is LineEdit:
-            var n := child.text.strip_edges()
-            if n.is_empty():
+            var name_input: LineEdit = child
+            var character_name: String = name_input.text.strip_edges()
+            if character_name.is_empty():
                 subtitle.text = "ENTER A CHARACTER NAME FIRST"
                 return
-            characters.append({"name": n, "mode": mode})
-            selected_character = n
+            characters.append({"name": character_name, "mode": mode})
+            selected_character = character_name
             _save_saves()
             _show_worlds()
             return
@@ -179,10 +183,10 @@ func _show_worlds() -> void:
         return
     var y := 55.0
     for w in worlds:
-        var n := str(w.get("name", "World"))
-        var size := str(w.get("size", "Medium"))
-        var difficulty := str(w.get("difficulty", "Classic"))
-        _button(n + "  •  " + size + " / " + difficulty, y, func(): _select_world(n))
+        var world_name: String = str(w.get("name", "World"))
+        var world_size: String = str(w.get("size", "Medium"))
+        var world_difficulty: String = str(w.get("difficulty", "Classic"))
+        _button(world_name + "  •  " + world_size + " / " + world_difficulty, y, _select_world.bind(world_name))
         y += 52.0
     _button("New World", y + 5, _show_world_create)
     _button("Back", y + 58, _show_characters)
@@ -202,9 +206,9 @@ func _show_world_create() -> void:
     _clear()
     _edit("World name", 45)
     _edit("Seed (leave blank for random)", 97)
-    _button("Small", 151, func(): _create_world("Small"))
-    _button("Medium", 206, func(): _create_world("Medium"))
-    _button("Large", 261, func(): _create_world("Large"))
+    _button("Small", 151, _create_world.bind("Small"))
+    _button("Medium", 206, _create_world.bind("Medium"))
+    _button("Large", 261, _create_world.bind("Large"))
     _button("Back", 316, _show_worlds)
 
 func _create_world(size: String) -> void:
@@ -212,14 +216,17 @@ func _create_world(size: String) -> void:
     for child in panel.get_children():
         if child is LineEdit:
             edits.append(child)
-    if edits.is_empty(): return
-    var n := edits[0].text.strip_edges()
-    if n.is_empty(): n = "World " + str(worlds.size() + 1)
-    var seed_text := edits[1].text.strip_edges()
-    var world_seed := randi()
-    if not seed_text.is_empty(): world_seed = seed_text.hash()
-    worlds.append({"name": n, "seed": world_seed, "size": size, "difficulty": "Classic"})
-    selected_world = n
+    if edits.is_empty():
+        return
+    var world_name: String = edits[0].text.strip_edges()
+    if world_name.is_empty():
+        world_name = "World " + str(worlds.size() + 1)
+    var seed_text: String = edits[1].text.strip_edges()
+    var world_seed: int = randi()
+    if not seed_text.is_empty():
+        world_seed = seed_text.hash()
+    worlds.append({"name": world_name, "seed": world_seed, "size": size, "difficulty": "Classic"})
+    selected_world = world_name
     _save_saves()
     _start_world()
 
@@ -259,9 +266,11 @@ func _toggle_fullscreen() -> void:
         DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 
 func _load_saves() -> void:
-    if not FileAccess.file_exists(SAVE_PATH): return
+    if not FileAccess.file_exists(SAVE_PATH):
+        return
     var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
-    if file == null: return
+    if file == null:
+        return
     var data = JSON.parse_string(file.get_as_text())
     if data is Dictionary:
         characters = data.get("characters", [])
